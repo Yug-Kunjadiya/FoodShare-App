@@ -1,6 +1,6 @@
 # 🍲 FoodShare App
 
-<<<<<<< HEAD
+
 A MERN stack web application that connects food donors with receivers to reduce food waste and promote sustainability.
 
 ## 🎯 Project Overview
