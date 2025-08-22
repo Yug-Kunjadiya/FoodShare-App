@@ -160,4 +160,4 @@ This project is licensed under the MIT License.
 > **Connecting surplus food with those who need it most**
 
 A MERN stack web application that acts as "Uber for surplus food", enabling donors to list available food items and receivers to find and claim them in real-time.
->>>>>>> bfb5f6fcc97d242c3eabcd1e06ac00ce5dd3e221
+
