@@ -1,27 +1,8 @@
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const path = require('path');
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-// Configure Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'foodshare',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    transformation: [
-      { width: 800, height: 600, crop: 'limit' },
-      { quality: 'auto:good' }
-    ]
-  }
-});
+// Simple memory storage for testing
+const storage = multer.memoryStorage();
 
 // File filter function
 const fileFilter = (req, file, cb) => {
@@ -60,17 +41,7 @@ const uploadMultiple = upload.array('images', 5);
 
 // Profile picture upload middleware
 const uploadProfilePicture = multer({
-  storage: new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'foodshare/profiles',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-      transformation: [
-        { width: 400, height: 400, crop: 'fill', gravity: 'face' },
-        { quality: 'auto:good' }
-      ]
-    }
-  }),
+  storage: storage,
   fileFilter: fileFilter,
   limits: {
     fileSize: 2 * 1024 * 1024 // 2MB for profile pictures
@@ -79,17 +50,7 @@ const uploadProfilePicture = multer({
 
 // Food images upload middleware
 const uploadFoodImages = multer({
-  storage: new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'foodshare/food',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-      transformation: [
-        { width: 800, height: 600, crop: 'limit' },
-        { quality: 'auto:good' }
-      ]
-    }
-  }),
+  storage: storage,
   fileFilter: fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024,
@@ -132,94 +93,34 @@ const handleUploadError = (error, req, res, next) => {
   next(error);
 };
 
-// Helper function to delete image from Cloudinary
+// Helper function to delete image (placeholder for now)
 const deleteImage = async (publicId) => {
-  try {
-    if (!publicId) return;
-    
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result;
-  } catch (error) {
-    console.error('Error deleting image from Cloudinary:', error);
-    throw error;
-  }
+  console.log('Image deletion would happen here for:', publicId);
+  return { result: 'ok' };
 };
 
 // Helper function to delete multiple images
 const deleteMultipleImages = async (publicIds) => {
-  try {
-    if (!publicIds || !Array.isArray(publicIds)) return;
-    
-    const deletePromises = publicIds.map(publicId => deleteImage(publicId));
-    const results = await Promise.allSettled(deletePromises);
-    
-    return results;
-  } catch (error) {
-    console.error('Error deleting multiple images:', error);
-    throw error;
-  }
+  console.log('Multiple image deletion would happen here for:', publicIds);
+  return [{ result: 'ok' }];
 };
 
-// Helper function to optimize image before upload
+// Helper function to optimize image (placeholder)
 const optimizeImage = async (imageBuffer, options = {}) => {
-  try {
-    const { width = 800, height = 600, quality = 'auto:good' } = options;
-    
-    const result = await cloudinary.uploader.upload_stream({
-      transformation: [
-        { width, height, crop: 'limit' },
-        { quality }
-      ]
-    }, (error, result) => {
-      if (error) throw error;
-      return result;
-    }).end(imageBuffer);
-    
-    return result;
-  } catch (error) {
-    console.error('Error optimizing image:', error);
-    throw error;
-  }
+  console.log('Image optimization would happen here');
+  return { url: 'placeholder-url' };
 };
 
-// Helper function to get image info
+// Helper function to get image info (placeholder)
 const getImageInfo = async (publicId) => {
-  try {
-    if (!publicId) return null;
-    
-    const result = await cloudinary.api.resource(publicId);
-    return result;
-  } catch (error) {
-    console.error('Error getting image info:', error);
-    return null;
-  }
+  console.log('Getting image info for:', publicId);
+  return { format: 'jpg', width: 800, height: 600 };
 };
 
-// Helper function to generate image URL with transformations
+// Helper function to generate image URL (placeholder)
 const generateImageUrl = (publicId, transformations = []) => {
-  if (!publicId) return null;
-  
-  const baseUrl = cloudinary.url(publicId);
-  
-  if (transformations.length === 0) {
-    return baseUrl;
-  }
-  
-  // Apply transformations
-  const transformString = transformations
-    .map(transform => {
-      const parts = [];
-      if (transform.width) parts.push(`w_${transform.width}`);
-      if (transform.height) parts.push(`h_${transform.height}`);
-      if (transform.crop) parts.push(`c_${transform.crop}`);
-      if (transform.quality) parts.push(`q_${transform.quality}`);
-      if (transform.gravity) parts.push(`g_${transform.gravity}`);
-      return parts.join(',');
-    })
-    .filter(Boolean)
-    .join('/');
-  
-  return `${baseUrl.split('/upload/')[0]}/upload/${transformString}/${baseUrl.split('/upload/')[1]}`;
+  console.log('Generating URL for:', publicId, 'with transformations:', transformations);
+  return 'https://example.com/placeholder.jpg';
 };
 
 module.exports = {
@@ -233,6 +134,5 @@ module.exports = {
   deleteMultipleImages,
   optimizeImage,
   getImageInfo,
-  generateImageUrl,
-  cloudinary
-}; 
+  generateImageUrl
+};

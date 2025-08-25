@@ -18,7 +18,7 @@ const adminRoutes = require('./routes/admin');
 
 const { connectDB } = require('./config/database');
 const { setupSocketIO } = require('./config/socket');
-const errorHandler = require('./middleware/errorHandler');
+const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const server = createServer(app);
