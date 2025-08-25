@@ -1,6 +1,5 @@
 # 🍲 FoodShare App
 
-
 A MERN stack web application that connects food donors with receivers to reduce food waste and promote sustainability.
 
 ## 🎯 Project Overview
@@ -155,9 +154,8 @@ This project is licensed under the MIT License.
 - MERN stack community
 - Google Maps API
 - Cloudinary for image hosting
-- Socket.IO for real-time features 
-=======
+- Socket.IO for real-time features
+
 > **Connecting surplus food with those who need it most**
 
 A MERN stack web application that acts as "Uber for surplus food", enabling donors to list available food items and receivers to find and claim them in real-time.
-
