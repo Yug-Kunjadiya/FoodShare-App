@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -33,33 +34,42 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      clearError();
-      return;
+
+    try {
+      // Validate passwords match
+      if (formData.password !== formData.confirmPassword) {
+        clearError();
+        toast.error('Passwords do not match');
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Prepare user data for registration
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        role: formData.role,
+        location: formData.location,
+        organization: formData.organization
+      };
+
+      const result = await register(userData);
+
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        toast.error(result.error || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error('An unexpected error occurred during registration');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(true);
-    
-    // Prepare user data for registration
-    const userData = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      phone: formData.phone,
-      role: formData.role,
-      location: formData.location,
-      organization: formData.organization
-    };
-    
-    const result = await register(userData);
-    
-    if (result.success) {
-      navigate('/dashboard');
-    }
-    
-    setIsLoading(false);
   };
 
   return (
