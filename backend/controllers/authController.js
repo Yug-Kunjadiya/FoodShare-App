@@ -11,7 +11,7 @@ const generateToken = (id) => {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
-
+//updated code
 // Send token response
 const sendTokenResponse = (user, statusCode, res) => {
   const token = generateToken(user._id);
@@ -67,6 +67,7 @@ const register = asyncHandler(async (req, res, next) => {
 // @route   POST /api/auth/login
 // @access  Public
 const login = asyncHandler(async (req, res, next) => {
+  console.log('Login request body:', req.body);
   const { email, password } = req.body;
 
   // Check if email and password exist
